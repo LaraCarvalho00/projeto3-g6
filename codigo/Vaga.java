@@ -1,24 +1,37 @@
 
 
 public class Vaga {
+    private String identificacao;
+    private boolean disponivel;
 
-	private String id;
-	private boolean disponivel;
+    public Vaga(String identificacao) {
+        this.identificacao = identificacao;
+        this.disponivel = true;
+    }
 
-	public Vaga(int fila, int numero) {
-		
-	}
+    public boolean estacionar() {
+        if (disponivel) {
+            disponivel = false;
+            return true; 
+        } else {
+            return false;
+        }
+    }
 
-	public boolean estacionar() {
-		
-	}
+    public boolean sair() {
+        if (!disponivel) {
+            disponivel = true;
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-	public boolean sair() {
-		
-	}
+    public boolean estaDisponivel() {
+        return disponivel;
+    }
 
-	public boolean disponivel() {
-		
-	}
-
+    public String getIdentificacao() {
+        return identificacao;
+    }
 }
