@@ -20,13 +20,14 @@ public class Veiculo {
 	}
 
 	public double sair() {
-		return valorASerPago;		
+		UsoDeVaga ultimo = this.usos[this.totalUsos -1];
+		return ultimo.sair();		
 	}
 
 	public double totalArrecadado() {
 		double total = 0;
         for (int i = 0; i < totalUsos; i++) {
-            total += usos[i].getValorPago();
+            total += usos[i].valorPago();
 		}
 		return total;
 	}
@@ -34,8 +35,8 @@ public class Veiculo {
 	public double arrecadadoNoMes(int mes) {
 		double totalMes = 0;
         for (int i = 0; i < totalUsos; i++) {
-            if (usos[i].getMes() == mes) {
-                totalMes += usos[i].getValorPago();
+            if (usos[i].ehDoMes(mes)) {
+                totalMes += usos[i].valorPago();
 			}
 		}
 		return totalMes;
