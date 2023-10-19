@@ -8,7 +8,7 @@ public class Cliente {
 	public Cliente(String nome, String id) {
 		this.nome = nome;
 		this.id = id;
-		this.Veiculo = new Veiculo[0];
+		this.veiculos = new Veiculo[100];
 
 	}
 
@@ -24,8 +24,9 @@ public class Cliente {
 	}
 
 	public Veiculo possuiVeiculo(String placa) {
+		Veiculo Placa = new Veiculo(placa);
 		for (Veiculo veiculo : veiculos) {
-			if (veiculo.getPlaca().equals(placa)) {
+			if (veiculo.equals(Placa)) {
 				return veiculo;
 			}
 		}
@@ -39,9 +40,11 @@ public class Cliente {
 
 	public double arrecadadoPorVeiculo(String placa) {
 		double arrecadacaoTotal = 0.0;
-		for (Veiculo veiculo : veiculos) {
-			if (veiculo.getPlaca().equals(placa)) {
-				arrecadacaoTotal += veiculo.getArrecadacao();
+		Veiculo V2 = new Veiculo(placa);
+
+       for (Veiculo veiculo : veiculos) {
+			if (veiculo.equals(V2)) {
+				arrecadacaoTotal += veiculo.totalArrecadado();
 				return arrecadacaoTotal;
 			}			
 		}
