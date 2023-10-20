@@ -61,4 +61,16 @@ public class Cliente {
 		return arrecadacaoNoMes;
 	}
 
+	public double arrecadadoTotal() {
+        double arrecadacaoTotal = 0.0;
+        for (Veiculo veiculo : veiculos) {
+            arrecadacaoTotal += veiculo.totalArrecadado();
+        }
+        return arrecadacaoTotal;
+    }public String getId() {
+		return id;
+	}
+
 }
+
+
