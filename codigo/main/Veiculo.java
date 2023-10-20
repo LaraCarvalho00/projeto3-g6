@@ -45,4 +45,8 @@ public class Veiculo {
 		return totalUsos;
 	}
 
+    public Object getVagaEstacionada() {
+        return null;
+    }
+
 }
