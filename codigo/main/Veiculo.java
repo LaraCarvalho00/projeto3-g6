@@ -1,7 +1,7 @@
 package main;
 public class Veiculo {
 
-	private String placa;
+	public String placa;
 	private UsoDeVaga[] usos;
 	private int totalUsos;
 
@@ -14,7 +14,7 @@ public class Veiculo {
 	public void estacionar(Vaga vaga) {
 		UsoDeVaga novoUso = new UsoDeVaga(vaga);
 		this.usos[totalUsos] = novoUso;
-
+		vaga.estacionar();
 		totalUsos++;
 	}
 
