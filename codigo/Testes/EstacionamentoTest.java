@@ -58,29 +58,25 @@ public class EstacionamentoTest {
 
     @Test
     public void testTotalArrecadado() {
-        // Certifique-se de adicionar lógica para calcular a arrecadação no método
         double totalArrecadado = estacionamento.totalArrecadado();
         assertTrue(totalArrecadado >= 0.0);
     }
 
     @Test
     public void testArrecadacaoNoMes() {
-        // Certifique-se de adicionar lógica para calcular a arrecadação no mês no método
-        double arrecadacaoNoMes = estacionamento.arrecadacaoNoMes(10); // Suponha o mês 10
+        double arrecadacaoNoMes = estacionamento.arrecadacaoNoMes(10); 
         assertTrue(arrecadacaoNoMes >= 0.0);
     }
 
     @Test
     public void testValorMedioPorUso() {
-        // Certifique-se de adicionar lógica para calcular o valor médio por uso no método
         double valorMedio = estacionamento.valorMedioPorUso();
         assertTrue(valorMedio >= 0.0);
     }
 
     @Test
     public void testTop5Clientes() {
-        // Certifique-se de adicionar lógica para calcular os top 5 clientes no mês no método
-        List<Cliente> top5 = estacionamento.top5Clientes(10); // Suponha o mês 10
+        List<Cliente> top5 = estacionamento.top5Clientes(10); 
         assertTrue(top5.size() <= 5);
     }
 }
