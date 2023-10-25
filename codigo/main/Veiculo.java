@@ -1,7 +1,7 @@
 package main;
 public class Veiculo {
 
-	private String placa;
+	public String placa;
 	private UsoDeVaga[] usos;
 	private int totalUsos;
 
