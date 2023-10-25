@@ -3,7 +3,7 @@ package main;
 public class Cliente {
 
 	private String nome;
-	private String id;
+	public String id;
 	private Veiculo[] veiculos;
 
 	public Cliente(String nome, String id) {
