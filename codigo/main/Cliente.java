@@ -3,13 +3,13 @@ package main;
 public class Cliente {
 
 	private String nome;
-	private String id;
+	public String id;
 	private Veiculo[] veiculos;
 
 	public Cliente(String nome, String id) {
 		this.nome = nome;
 		this.id = id;
-		this.veiculos = new Veiculo[100];
+		this.veiculos = new Veiculo[0];
 
 	}
 
@@ -25,9 +25,8 @@ public class Cliente {
 	}
 
 	public Veiculo possuiVeiculo(String placa) {
-		Veiculo Placa = new Veiculo(placa);
 		for (Veiculo veiculo : veiculos) {
-			if (veiculo.equals(Placa)) {
+			if (veiculo.placa.equals(placa)) {
 				return veiculo;
 			}
 		}

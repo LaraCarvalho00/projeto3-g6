@@ -122,7 +122,7 @@ public class Estacionamento {
     for (int i = 0; i < numClientes; i++) {
         top5Clientes.add(clientesNoMes.get(clientesNoMes.size() - 1 - i));
     }
-
+	
     return top5Clientes;
 }
 
