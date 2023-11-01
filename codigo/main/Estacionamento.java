@@ -70,6 +70,24 @@ public class Estacionamento {
             totalArrecadado += veiculo.getPreco();
         }
     }
+	
+   public List<Cliente> top5Clientes(int mes) {
+    PriorityQueue<Cliente> topClientes = new PriorityQueue<>(5, Comparator.comparingDouble(cliente -> -cliente.arrecadadoNoMes(mes)));
+
+    for (Cliente cliente : clientes) {
+        topClientes.offer(cliente);
+
+        if (topClientes.size() > 5) {
+            topClientes.poll();
+        }
+    }
+
+    List<Cliente> top5Clientes = new ArrayList<>(topClientes);
+    top5Clientes.sort(Comparator.comparingDouble(cliente -> -cliente.arrecadadoNoMes(mes)));
+    
+    return top5Clientes;
+}
+
 
     private Veiculo findVeiculoByPlaca(String placa) {
         for (Cliente cliente : clientes) {
