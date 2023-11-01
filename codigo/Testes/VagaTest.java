@@ -1,45 +1,39 @@
 package Testes;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Test;
+
+import main.Vaga;
+
 public class VagaTest {
-    public static void main(String[] args) {
-        
+
+    @Test
+    public void testEstaDisponivel() {
         Vaga vaga = new Vaga("Vaga A");
+        assertTrue(vaga.estaDisponivel());
+    }
 
-        
-        if (vaga.estaDisponivel()) {
-            System.out.println("A vaga está disponível.");
-        } else {
-            System.out.println("A vaga não está disponível.");
-        }
+    @Test
+    public void testEstacionar() {
+        Vaga vaga = new Vaga("Vaga A");
+        assertTrue(vaga.estacionar());
+        assertFalse(vaga.estaDisponivel()); 
+    }
 
-        
-        boolean estacionou = vaga.estacionar();
-        if (estacionou) {
-            System.out.println("Carro estacionado com sucesso.");
-        } else {
-            System.out.println("A vaga já está ocupada.");
-        }
+    @Test
+    public void testSair() {
+        Vaga vaga = new Vaga("Vaga A");
+        vaga.estacionar();
+        assertTrue(vaga.sair());
+        assertTrue(vaga.estaDisponivel()); 
+    }
 
-        
-        if (vaga.estaDisponivel()) {
-            System.out.println("A vaga está disponível.");
-        } else {
-            System.out.println("A vaga não está disponível.");
-        }
-
-        
-        boolean saiu = vaga.sair();
-        if (saiu) {
-            System.out.println("Carro retirado com sucesso.");
-        } else {
-            System.out.println("A vaga já está vazia.");
-        }
-
-        
-        if (vaga.estaDisponivel()) {
-            System.out.println("A vaga está disponível.");
-        } else {
-            System.out.println("A vaga não está disponível.");
-        }
+    @Test
+    public void testGetIdentificacao() {
+        Vaga vaga = new Vaga("Vaga A");
+        assertEquals("Vaga A", vaga.getIdentificacao());
     }
 }
