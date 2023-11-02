@@ -2,11 +2,11 @@ package main;
 
 
 public class Vaga {
-    private int identificacao;
+    private String id;
     private boolean disponivel;
 
-    public Vaga(int identificacao) {
-        this.identificacao = identificacao;
+    public Vaga(int numero, int fila) {
+        this.id = "Vaga " + numero + "fila " + fila;
         this.disponivel = true;
     }
 
@@ -32,7 +32,8 @@ public class Vaga {
         return disponivel;
     }
 
-    public int getIdentificacao() {
-        return identificacao;
+    public String getIdentificacao() {
+        return id;
     }
 }
+
