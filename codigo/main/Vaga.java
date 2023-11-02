@@ -2,10 +2,10 @@ package main;
 
 
 public class Vaga {
-    private String identificacao;
+    private int identificacao;
     private boolean disponivel;
 
-    public Vaga(String identificacao) {
+    public Vaga(int identificacao) {
         this.identificacao = identificacao;
         this.disponivel = true;
     }
@@ -32,7 +32,7 @@ public class Vaga {
         return disponivel;
     }
 
-    public String getIdentificacao() {
+    public int getIdentificacao() {
         return identificacao;
     }
 }

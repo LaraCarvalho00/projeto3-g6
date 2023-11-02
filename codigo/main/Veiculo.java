@@ -12,7 +12,7 @@ public class Veiculo {
 	}
 
 	public void estacionar(Vaga vaga) {
-		UsoDeVaga novoUso = new UsoDeVaga(vaga);
+		UsoDeVaga novoUso = new UsoDeVaga(vaga, null);
 		this.usos[totalUsos] = novoUso;
 		vaga.estacionar();
 		totalUsos++;
