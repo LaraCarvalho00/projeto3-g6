@@ -3,6 +3,7 @@ package main;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.PriorityQueue;
 
 public class Estacionamento {
 
@@ -63,6 +64,7 @@ public class Estacionamento {
         }
     }
 
+
     public void sair(String placa) {
         Veiculo veiculo = findVeiculoByPlaca(placa);
         if (veiculo != null) {
@@ -70,6 +72,19 @@ public class Estacionamento {
             totalArrecadado += veiculo.getPreco();
         }
     }
+
+    public double valorMedioPorUso() {
+
+		double usos = 0;
+		double totalArrecadado = 0;
+
+		for (Cliente x : clientes) {
+			usos += x.totalDeUsos();
+			totalArrecadado += x.arrecadadoTotal();
+		}
+		double media = totalArrecadado / usos;
+		return media;
+	}
 	
    public List<Cliente> top5Clientes(int mes) {
     PriorityQueue<Cliente> topClientes = new PriorityQueue<>(5, Comparator.comparingDouble(cliente -> -cliente.arrecadadoNoMes(mes)));
@@ -101,6 +116,21 @@ public class Estacionamento {
             }
         }
         return null;
+    }
+
+
+
+	public double sairVeiculo(String placa) {
+        Veiculo veiculo = findVeiculoByPlaca(placa);
+        if (veiculo != null) {
+            double valorPago = veiculo.sair();
+            totalArrecadado += valorPago;
+            return valorPago;
+        } else {
+
+            System.out.println("Veículo com placa " + placa + " não encontrado no estacionamento.");
+            return 0.0; 
+        }
     }
 
 }
