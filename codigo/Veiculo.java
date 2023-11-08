@@ -50,7 +50,7 @@ public class Veiculo implements IDataToText {
 
 	@Override
 	public String dataToText() {
-		return placa + ";" + marca + ";" + modelo;
+		return placa;
 	}
 
 }
