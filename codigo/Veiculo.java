@@ -44,8 +44,15 @@ public class Veiculo {
 		return totalUsos;
 	}
 
-    public Object getVagaEstacionada() {
-        return null;
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Veiculo:\n");
+        sb.append("Placa: ").append(placa).append("\n");
+        sb.append("Total de Usos: ").append(totalUsos).append("\n");
+        sb.append("Arrecadação Total: ").append(totalArrecadado()).append("\n");
+        return sb.toString();
     }
+
 
 }
