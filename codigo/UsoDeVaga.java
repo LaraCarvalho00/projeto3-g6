@@ -1,4 +1,3 @@
-package main;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -63,5 +62,21 @@ public class UsoDeVaga {
         } else {
             return false;
         }
+    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Informações do UsoDeVaga:\n");
+        sb.append("Vaga: ").append(vaga).append("\n");
+        sb.append("Entrada: ").append(entrada).append("\n");
+        sb.append("Saída: ").append(saida).append("\n");
+        sb.append("Valor Pago: ").append(valorPago).append("\n");
+        sb.append("Serviços: ");
+        for (Servico servico : servicos) {
+            sb.append(servico).append(", ");
+        }
+        sb.append("\n");
+
+        return sb.toString();
     }
 }

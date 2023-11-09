@@ -1,4 +1,3 @@
-package main;
 public enum Servico {
     MANOBRISTA(5.0, 0),
     LAVAGEM(20.0, 60),

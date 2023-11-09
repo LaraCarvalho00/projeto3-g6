@@ -1,5 +1,4 @@
-package main;
-public class Veiculo {
+public class Veiculo implements IDataToText {
 
 	public String placa;
 	private UsoDeVaga[] usos;
@@ -19,23 +18,23 @@ public class Veiculo {
 	}
 
 	public double sair() {
-		UsoDeVaga ultimo = this.usos[this.totalUsos -1];
-		return ultimo.sair();		
+		UsoDeVaga ultimo = this.usos[this.totalUsos - 1];
+		return ultimo.sair();
 	}
 
 	public double totalArrecadado() {
 		double total = 0;
-        for (int i = 0; i < totalUsos; i++) {
-            total += usos[i].valorPago();
+		for (int i = 0; i < totalUsos; i++) {
+			total += usos[i].valorPago();
 		}
 		return total;
 	}
 
 	public double arrecadadoNoMes(int mes) {
 		double totalMes = 0;
-        for (int i = 0; i < totalUsos; i++) {
-            if (usos[i].ehDoMes(mes)) {
-                totalMes += usos[i].valorPago();
+		for (int i = 0; i < totalUsos; i++) {
+			if (usos[i].ehDoMes(mes)) {
+				totalMes += usos[i].valorPago();
 			}
 		}
 		return totalMes;
@@ -45,8 +44,13 @@ public class Veiculo {
 		return totalUsos;
 	}
 
-    public Object getVagaEstacionada() {
-        return null;
-    }
+	public Object getVagaEstacionada() {
+		return null;
+	}
+
+	@Override
+	public String dataToText() {
+		return placa;
+	}
 
 }
