@@ -53,4 +53,11 @@ public class Veiculo implements IDataToText {
 		return placa;
 	}
 
+	@Override
+   	public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Placa: ").append(placa).append("\n");
+        sb.append("Total de usos: ").append(totalUsos);
+        return sb.toString();
+    }
 }

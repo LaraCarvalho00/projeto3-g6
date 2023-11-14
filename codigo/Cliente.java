@@ -2,7 +2,7 @@ public class Cliente implements IDataToText {
 
 	private String nome;
 	public String id;
-	private Veiculo[] veiculos;
+	public Veiculo[] veiculos;
 
 	public Cliente(String nome, String id) {
 		this.nome = nome;
@@ -31,9 +31,8 @@ public class Cliente implements IDataToText {
 		return null;
 	}
 
-	public int totalDeUsos() {
+	public int totalVeiculos(){
 		return veiculos.length;
-
 	}
 
 	public double arrecadadoPorVeiculo(String placa) {
