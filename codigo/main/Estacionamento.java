@@ -14,6 +14,7 @@ public class Estacionamento {
     private int vagasPorFileira;
     private double totalArrecadado;
 
+
     public Estacionamento(String nome, int fileiras, int vagasPorFila) {
         int vagasTotais = vagasPorFila * vagasPorFileira;
         this.nome = nome;
@@ -57,7 +58,7 @@ public class Estacionamento {
                 if (veiculo != null) {
                     veiculo.estacionar(vagas[i]);
                     totalArrecadado += veiculo.getPreco();
-                    vagas[i].desocupar();
+                    vagas[i].sair();
                     break;
                 }
             }
@@ -69,7 +70,7 @@ public class Estacionamento {
         Veiculo veiculo = findVeiculoByPlaca(placa);
         if (veiculo != null) {
             veiculo.sair();
-            totalArrecadado += veiculo.getPreco();
+            totalArrecadado += veiculo.totalDeUsos();
         }
     }
 
@@ -107,7 +108,7 @@ public class Estacionamento {
     private Veiculo findVeiculoByPlaca(String placa) {
         for (Cliente cliente : clientes) {
             if (cliente != null) {
-                List<Veiculo> veiculos = cliente.getVeiculos();
+                List<Veiculo> veiculos = cliente.addVeiculo();
                 for (Veiculo veiculo : veiculos) {
                     if (veiculo.getPlaca().equals(placa)) {
                         return veiculo;
