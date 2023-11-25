@@ -1,12 +1,9 @@
-package main;
-
-
 public class Vaga {
-    private String identificacao;
+    private String id;
     private boolean disponivel;
 
-    public Vaga(String identificacao) {
-        this.identificacao = identificacao;
+    public Vaga(int numero, int fila) {
+        this.id = "Vaga " + numero + "fila " + fila;
         this.disponivel = true;
     }
 
@@ -33,6 +30,7 @@ public class Vaga {
     }
 
     public String getIdentificacao() {
-        return identificacao;
+        return id;
     }
 }
+

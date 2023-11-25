@@ -1,5 +1,5 @@
-package main;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class UsoDeVaga {
     private static final double FRACAO_USO = 0.25;
@@ -10,12 +10,14 @@ public class UsoDeVaga {
     private LocalDateTime entrada;
     private LocalDateTime saida;
     private double valorPago;
-    private Servicos servicos;
+    private List<Servico> servicos;
 
     public UsoDeVaga(Vaga vaga, Servico servico) {
         this.vaga = vaga;
         this.entrada = LocalDateTime.now();
-        this.servicos = servicos;
+        if(servico != null){
+             this.servicos.add(servico);
+        }
     }
 
     public double sair() {
@@ -36,7 +38,11 @@ public class UsoDeVaga {
             valor = VALOR_MAXIMO;
         }
 
-        valor += servicos.getValor();
+        for(Servico servico : servicos){
+            if(servico != null){
+                valor += servico.getValor();
+            }
+        }
 
         return valor;
     }
@@ -47,5 +53,30 @@ public class UsoDeVaga {
 
     public double valorPago() {
         return valorPago;
+    }
+    public boolean solicitarServico(Servico servico) {
+        long minutosEstacionado = calcularMinutosEstacionado();
+        if (minutosEstacionado >= servico.getTempoMinimoPermanenciaMinutos()) {
+            servicos.add(servico);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Informações do UsoDeVaga:\n");
+        sb.append("Vaga: ").append(vaga).append("\n");
+        sb.append("Entrada: ").append(entrada).append("\n");
+        sb.append("Saída: ").append(saida).append("\n");
+        sb.append("Valor Pago: ").append(valorPago).append("\n");
+        sb.append("Serviços: ");
+        for (Servico servico : servicos) {
+            sb.append(servico).append(", ");
+        }
+        sb.append("\n");
+
+        return sb.toString();
     }
 }
