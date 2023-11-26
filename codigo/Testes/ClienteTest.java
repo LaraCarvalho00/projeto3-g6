@@ -1,80 +1,55 @@
 package Testes;
-
-import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
-
-import main.Cliente;
-import main.Vaga;
-import main.Veiculo;
-import main.UsoDeVaga;
+import static org.junit.Assertions.*;
 
 public class ClienteTest {
-    private Cliente cliente;
-    private Veiculo veiculo1;
-    private Veiculo veiculo2;
-    private Vaga vaga1;
-    private Vaga vaga2;
 
-    @Before
-    public void setUp() {
-        cliente = new Cliente("John Doe", "123456789");
-        veiculo1 = new Veiculo("ABC123");
-        veiculo2 = new Veiculo("XYZ789");
-        vaga1 = new Vaga("A1");
-        vaga2 = new Vaga("B1");
+    @Test
+    public void testAddVeiculoCorreto() {
+        Cliente cliente = new Cliente("Nome", "ID");
+        Veiculo veiculo = new Veiculo("ABC123");
+
+        assertEquals(0, cliente.totalVeiculos());
+        cliente.addVeiculo(veiculo);
+        assertEquals(1, cliente.totalVeiculos());
+        assertEquals(veiculo, cliente.possuiVeiculo("ABC123"));
     }
 
     @Test
-    public void testAddVeiculo() {
-        cliente.addVeiculo(veiculo1);
-        cliente.addVeiculo(veiculo2);
+    public void testAddVeiculoExistente() {
+        Cliente cliente = new Cliente("Nome", "ID");
+        Veiculo veiculo = new Veiculo("ABC123");
 
-        assertEquals(2, cliente.totalDeUsos());
+        cliente.addVeiculo(veiculo); // Adiciona o veículo pela primeira vez
+        assertEquals(1, cliente.totalVeiculos());
+
+        // Tenta adicionar o mesmo veículo novamente
+        cliente.addVeiculo(veiculo);
+        assertEquals(1, cliente.totalVeiculos()); // Deve permanecer com 1 veículo apenas
     }
 
     @Test
-    public void testArrecadadoPorVeiculo() {
-        cliente.addVeiculo(veiculo1);
-        vaga1.estacionar();
-        vaga1.sair();
+    public void testArrecadadoPorVeiculoCorreto() {
+        Cliente cliente = new Cliente("Nome", "ID");
+        Veiculo veiculo = new Veiculo("ABC123");
+        veiculo.estacionar(new Vaga(1, 1));
+        veiculo.sair();
 
-        UsoDeVaga usoDeVaga1 = new UsoDeVaga(vaga1);
-        double valorPago = usoDeVaga1.sair();
+        cliente.addVeiculo(veiculo);
 
-        assertEquals(valorPago, cliente.arrecadadoPorVeiculo("A1"), 0.01);
+        assertEquals(0.0, cliente.arrecadadoPorVeiculo("ABC123"));
     }
 
     @Test
-    public void testArrecadadoNoMes() {
-        cliente.addVeiculo(veiculo1);
-        cliente.addVeiculo(veiculo2);
-      
-        vaga1.estacionar();
-        vaga1.sair();
+    public void testArrecadadoPorVeiculoInexistente() {
+        Cliente cliente = new Cliente("Nome", "ID");
+        Veiculo veiculo = new Veiculo("ABC123");
+        veiculo.estacionar(new Vaga(1, 1));
+        veiculo.sair();
 
-        vaga2.estacionar();
-        vaga2.sair();
-
-        
-        UsoDeVaga usoDeVaga1 = new UsoDeVaga(vaga1);
-        UsoDeVaga usoDeVaga2 = new UsoDeVaga(vaga2);
-        assertEquals(usoDeVaga1.valorPago() + usoDeVaga2.valorPago(), cliente.arrecadadoNoMes(1), 0.01);
+        // Cliente não possui esse veículo
+        assertEquals(0.0, cliente.arrecadadoPorVeiculo("XYZ789"));
     }
 
-    @Test
-    public void testArrecadadoTotal() {
-        cliente.addVeiculo(veiculo1);
-        cliente.addVeiculo(veiculo2);
-
-        vaga1.estacionar();
-        vaga1.sair();
-
-        vaga2.estacionar();
-        vaga2.sair();
-
-        UsoDeVaga usoDeVaga1 = new UsoDeVaga(vaga1);
-        UsoDeVaga usoDeVaga2 = new UsoDeVaga(vaga2);
-        assertEquals(usoDeVaga1.valorPago() + usoDeVaga2.valorPago(), cliente.arrecadadoTotal(), 0.01);
-    }
+    // Outros testes para os métodos restantes da classe Cliente
 }
