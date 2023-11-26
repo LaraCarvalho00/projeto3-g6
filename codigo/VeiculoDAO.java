@@ -53,7 +53,7 @@ public class VeiculoDAO implements DAO<Veiculo> {
             String[] linha = arqLeitura.nextLine().split(";");
 
             String placa = linha[0];
-            return new Veiculo(placa);
+            return new Veiculo(placa, 1000);
         }
         return null;
     }
