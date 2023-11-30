@@ -1,12 +1,11 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 
 // Classe que representa um Veículo no estacionamento
-public class Veiculo implements Serializable, IDataToText {
+public class Veiculo implements IDataToText {
 
-    private String placa;       // Identificação única do veículo (placa)
+    String placa;       // Identificação única do veículo (placa)
     private UsoDeVaga[] usos;   // Array para armazenar os usos da vaga associados ao veículo
 
     // Construtor para criar um Veículo com uma placa e um número máximo de usos

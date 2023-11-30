@@ -53,9 +53,10 @@ public class ClienteDAO implements DAO<Cliente> {
             String[] linha = arqLeitura.nextLine().split(";");
             String nome = linha[0].toLowerCase();
             String id = linha[1];
-             return new Cliente(nome, id);
+            
+            return new Cliente(nome, id, null, null);
         }
-       return null;
+        return null;
     }
 
     public void add(Cliente dado) throws IOException {

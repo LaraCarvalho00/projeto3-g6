@@ -1,11 +1,10 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 // Classe que representa o uso de uma vaga de estacionamento
-public class UsoDeVaga implements Serializable {
+public class UsoDeVaga{
 
     // Constantes para cálculos de valor
     private static final double FRACAO_USO = 0.25;

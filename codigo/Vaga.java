@@ -1,9 +1,8 @@
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Serializable;
 
 // Classe que representa uma Vaga no estacionamento
-public class Vaga implements Serializable {
+public class Vaga {
 	private String id;           // Identificação única da vaga
 	private boolean disponivel;  // Indica se a vaga está disponível
 

@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,7 +15,7 @@ import java.util.Map;
 
 import javax.management.RuntimeErrorException;
 
-public class Estacionamento implements Serializable {
+public class Estacionamento {
 	private String nome;
 	private Cliente[] id;
 	private Vaga[] vagas;

@@ -111,7 +111,7 @@ public class App {
             System.out.println("Indique seu nome: ");
             String nome = scanner.nextLine();
             TipoCliente tipoCliente = null;
-            c = new Cliente(nome, id,tipoCliente.HORISTA , null);
+            c = new Cliente(nome, id, tipoCliente, null);
             estacionamento.addCliente(c);
         }
 
