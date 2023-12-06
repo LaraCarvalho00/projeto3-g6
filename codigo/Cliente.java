@@ -1,179 +1,149 @@
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.Period;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Scanner;
 
-public class Cliente implements IDataToText {
+public class ClienteDAO implements DAO<Cliente> {
+    private String nomeArq;
+    private Scanner arqLeitura;
+    private FileWriter arqEscrita;
 
-    private String nome;
-    private String id;
-    private Veiculo[] veiculos = new Veiculo[10];
-    private int mensalista;
-    private LocalDate dateMensalista;
-    private TipoCliente tipoCliente;
-
-    // Construtor da classe Cliente
-    public Cliente(String nome, String id, TipoCliente tipoCliente, LocalDate dateMensalista) {
-        this.nome = nome;
-        this.id = id;
-        this.dateMensalista = dateMensalista;
-        this.tipoCliente = tipoCliente;
+    /**
+     * Construtor da classe ClienteDAO.
+     * 
+     * @param nomeArq O nome do arquivo a ser manipulado pelo DAO.
+     */
+    public ClienteDAO(String nomeArq) {
+        this.nomeArq = nomeArq;
+        this.arqEscrita = null;
+        this.arqLeitura = null;
     }
 
-    // Método para escrever informações do cliente em um arquivo
-    public void escreverArquivo(String estacionamento) {
+    /**
+     * Abre o arquivo para leitura.
+     * 
+     * @throws IOException Exceção lançada em caso de erro na abertura do arquivo.
+     */
+    public void abrirLeitura() throws IOException {
+        if (arqEscrita != null) {
+            arqEscrita.close();
+            arqEscrita = null;
+        }
+        arqLeitura = new Scanner(new File(nomeArq), Charset.forName("UTF-8"));
+    }
+
+    /**
+     * Abre o arquivo para escrita.
+     * 
+     * @throws IOException Exceção lançada em caso de erro na abertura do arquivo.
+     */
+    public void abrirEscrita() throws IOException {
+        if (arqLeitura != null) {
+            arqLeitura.close();
+            arqLeitura = null;
+        }
+        arqEscrita = new FileWriter(nomeArq, Charset.forName("UTF-8"), true);
+    }
+
+    /**
+     * Fecha os recursos de leitura e escrita do arquivo.
+     */
+    public void fechar() {
         try {
-            FileWriter fileWriter = new FileWriter("cliente.txt", true);
-            fileWriter.write(estacionamento + "," + this.nome + "," + this.id + "," + this.tipoCliente + ","
-                    + this.dateMensalista + ";");
-
-            for (Veiculo veiculo : veiculos) {
-                if (veiculo != null)
-                    veiculo.escreverArquivo(this.id, estacionamento);
+            if (arqEscrita != null) {
+                arqEscrita.close();
             }
-
-            fileWriter.close();
-
+            if (arqLeitura != null) {
+                arqLeitura.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            arqEscrita = null;
+            arqLeitura = null;
         }
     }
 
-    // Método para adicionar um veículo ao cliente
-    public void addVeiculo(Veiculo veiculo) {
-        if (veiculos != null) {
-            for (int i = 0; i < veiculos.length; i++) {
-                if (veiculos[i] == null) {
-                    veiculos[i] = veiculo;
-                    break;
-                }
-            }
-        } else {
-            veiculos[0] = veiculo;
-        }
-    }
-
-    // Método para verificar se o cliente possui um veículo com uma determinada placa
-    public Veiculo possuiVeiculo(String placa) {
-        for (Veiculo veiculo : veiculos) {
-            if (veiculo != null && veiculo.getPlaca().equals(placa)) {
-                return veiculo;
-            }
+    /**
+     * Obtém o próximo registro do arquivo e cria um objeto Cliente com os dados lidos.
+     * 
+     * @return Um objeto Cliente lido do arquivo, ou null se não houver mais registros.
+     */
+    public Cliente getNext() {
+        if (arqLeitura.hasNext()) {
+            String[] linha = arqLeitura.nextLine().split(" ");
+            String nome = linha[1].toLowerCase();
+            String id = linha[0];
+            String tipoClienteString = linha[2].toUpperCase();
+            
+            TipoCliente tipoCliente = TipoCliente.valueOf(tipoClienteString); // Converte a string para a enumeração TipoCliente
+        
+            return new Cliente(nome, id, tipoCliente);
         }
         return null;
     }
 
-    // Método para calcular o total de usos de veículos pelo cliente
-    public int totalDeUsos() {
-        int totalUsos = 0;
-        for (Veiculo veiculo : veiculos) {
-            if (veiculo != null) {
-                totalUsos += veiculo.totalDeUsos();
+    /**
+     * Adiciona um objeto Cliente ao arquivo.
+     * 
+     * @param dado O objeto Cliente a ser adicionado ao arquivo.
+     * @throws IOException Exceção lançada em caso de erro na escrita do arquivo.
+     */
+    public void add(Cliente dado) throws IOException {
+        abrirEscrita();
+        arqEscrita.append(dado.dataToText() + "\n");
+        fechar();
+    }
+
+    /**
+     * Obtém todos os registros do arquivo e os retorna em um array de Clientes.
+     * 
+     * @return Um array de Clientes contendo todos os registros do arquivo.
+     */
+    public Cliente[] getAll() {
+        int TAM_MAX = 10000;
+        int cont = 0;
+        Cliente[] dados = new Cliente[TAM_MAX];
+        try {
+            fechar();
+            abrirLeitura();
+            while (arqLeitura.hasNext()) {
+                Cliente cliente = this.getNext();
+                if (cliente != null) {
+                    dados[cont] = cliente;
+                    cont++;
+                }
             }
+        } catch (IOException exception) {
+            exception.printStackTrace();
+            dados = null;
+        } finally {
+            fechar();
         }
-        return totalUsos;
+        dados = Arrays.copyOf(dados, cont);
+        return dados;
     }
 
-    // Método para calcular a arrecadação total do cliente
-    public double arrecadadoTotal() {
-        double totalArrecadado = 0;
-        for (Veiculo veiculo : veiculos) {
-            if (veiculo != null) {
-                totalArrecadado += veiculo.totalArrecadado();
+    /**
+     * Adiciona vários objetos Cliente ao arquivo.
+     * 
+     * @param dados Um array de Clientes a ser adicionado ao arquivo.
+     */
+    public void addAll(Cliente[] dados) {
+        try {
+            fechar();
+            abrirEscrita();
+            for (Cliente cliente : dados) {
+                if (cliente != null) {
+                    arqEscrita.append(cliente.dataToText() + "\n");
+                }
             }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            fechar();
         }
-        int count = -1;
-        LocalDate momentoAtual = LocalDate.now();
-        if (this.dateMensalista != null) {
-            long mes = 0;
-            mes = Period.between(momentoAtual, this.dateMensalista).getMonths();
-            do {
-                totalArrecadado += this.tipoCliente.getValor();
-                count++;
-            } while (count < mes);
-        }
-
-        return totalArrecadado;
-    }
-
-    // Método para calcular a arrecadação do cliente em um determinado mês
-    public double arrecadadoNoMes(int mes) {
-        double arrecadadoNoMes = 0;
-        for (Veiculo veiculo : veiculos) {
-            if (veiculo != null) {
-                arrecadadoNoMes += veiculo.arrecadadoNoMes(mes);
-            }
-        }
-
-        if (this.dateMensalista != null && mes >= this.dateMensalista.getMonthValue()) {
-            arrecadadoNoMes += this.tipoCliente.getValor();
-        }
-
-        return arrecadadoNoMes;
-    }
-
-    // Getter para o campo nome
-    public String getNome() {
-        return nome;
-    }
-
-    // Setter para o campo nome
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    // Getter para o campo id
-    public String getId() {
-        return id;
-    }
-
-    // Setter para o campo id
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    // Getter para o campo veiculos
-    public Veiculo[] getVeiculos() {
-        return veiculos;
-    }
-
-    // Setter para o campo veiculos
-    public void setVeiculos(Veiculo[] veiculos) {
-        this.veiculos = veiculos;
-    }
-
-    // Getter para o tipo de cliente
-    public TipoCliente getTipoCliente() {
-        return this.tipoCliente;
-    }
-
-    // Setter para o tipo de cliente
-    public void setTipoCliente(TipoCliente tipoCliente) {
-        this.tipoCliente = tipoCliente;
-    }
-
-    // Getter para a data do mensalista
-    public LocalDate getDateMensalista() {
-        return this.dateMensalista;
-    }
-
-    // Setter para a data do mensalista
-    public void setDateMensalista(LocalDate dateMensalista) {
-        this.dateMensalista = dateMensalista;
-    }
-
-    @Override
-	public String dataToText() {
-		return id + ";" + nome;
-	}
-	@Override
-   	public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Cliente:\n");
-        sb.append("ID: ").append(id).append("\n");
-        sb.append("Nome: ").append(nome).append("\n");
-        sb.append("Veículos: ").append(veiculos.length).append("\n");
-        sb.append("Arrecadação Total: ").append(arrecadadoTotal()).append("\n");
-        return sb.toString();
     }
 }
