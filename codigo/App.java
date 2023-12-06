@@ -59,7 +59,7 @@ public class App {
     public static void entrarComoCliente() {
        
         Estacionamento e = estacionamento1;
-        System.out.println("escolha o estacionamento: ");
+        System.out.println("Escolha o estacionamento: ");
         int escolha = scanner.nextInt();
 
         switch (escolha) {
@@ -122,7 +122,7 @@ public class App {
             System.out.println("1. Estacionar Veiculo");
             System.out.println("2. Sair com veículo");
             System.out.println("3. Acessar histórico de uso do estacionamento");
-            System.out.println("4. adicionar veículo");
+            System.out.println("4. Adicionar veículo");
             System.out.println("5. Seja um mensalista!");
             System.out.println("6. Adicionar um serviço");
             System.out.println("7. Sair");
