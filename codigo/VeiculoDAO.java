@@ -5,17 +5,30 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * Classe responsável por manipular a persistência de objetos Veiculo em um arquivo.
+ */
 public class VeiculoDAO implements DAO<Veiculo> {
-    private String nomeArq;
-    private Scanner arqLeitura;
-    private FileWriter arqEscrita;
+    private String nomeArq;       // Nome do arquivo de armazenamento
+    private Scanner arqLeitura;   // Scanner para leitura do arquivo
+    private FileWriter arqEscrita; // FileWriter para escrita no arquivo
 
+    /**
+     * Construtor da classe VeiculoDAO.
+     *
+     * @param nomeArq Nome do arquivo para armazenar os objetos Veiculo
+     */
     public VeiculoDAO(String nomeArq) {
         this.nomeArq = nomeArq;
         this.arqEscrita = null;
         this.arqLeitura = null;
     }
 
+    /**
+     * Abre o arquivo para leitura.
+     *
+     * @throws IOException Exceção lançada caso ocorra um erro na abertura do arquivo
+     */
     public void abrirLeitura() throws IOException {
         if (arqEscrita != null) {
             arqEscrita.close();
@@ -24,6 +37,11 @@ public class VeiculoDAO implements DAO<Veiculo> {
         arqLeitura = new Scanner(new File(nomeArq), Charset.forName("UTF-8"));
     }
 
+    /**
+     * Abre o arquivo para escrita.
+     *
+     * @throws IOException Exceção lançada caso ocorra um erro na abertura do arquivo
+     */
     public void abrirEscrita() throws IOException {
         if (arqLeitura != null) {
             arqLeitura.close();
@@ -32,6 +50,9 @@ public class VeiculoDAO implements DAO<Veiculo> {
         arqEscrita = new FileWriter(nomeArq, Charset.forName("UTF-8"), true);
     }
 
+    /**
+     * Fecha os recursos de leitura e escrita.
+     */
     public void fechar() {
         try {
             if (arqEscrita != null) {
@@ -48,22 +69,37 @@ public class VeiculoDAO implements DAO<Veiculo> {
         }
     }
 
+    /**
+     * Obtém o próximo objeto Veiculo do arquivo.
+     *
+     * @return Objeto Veiculo lido do arquivo
+     */
     public Veiculo getNext() {
         if (arqLeitura.hasNext()) {
             String[] linha = arqLeitura.nextLine().split(";");
-
             String placa = linha[0];
-            return new Veiculo(placa, 1000);
+            return new Veiculo(placa);
         }
         return null;
     }
 
+    /**
+     * Adiciona um objeto Veiculo ao arquivo.
+     *
+     * @param dado Objeto Veiculo a ser adicionado
+     * @throws IOException Exceção lançada caso ocorra um erro na escrita do arquivo
+     */
     public void add(Veiculo dado) throws IOException {
         abrirEscrita();
-        arqEscrita.append(dado.dataToText() + "\n");
+        arqEscrita.append(dado.dataToText()).append("\n");
         fechar();
     }
 
+    /**
+     * Obtém todos os objetos Veiculo do arquivo.
+     *
+     * @return Array contendo todos os objetos Veiculo lidos do arquivo
+     */
     public Veiculo[] getAll() {
         int TAM_MAX = 10000;
         int cont = 0;
@@ -88,13 +124,18 @@ public class VeiculoDAO implements DAO<Veiculo> {
         return dados;
     }
 
+    /**
+     * Adiciona vários objetos Veiculo ao arquivo.
+     *
+     * @param dados Array de objetos Veiculo a serem adicionados
+     */
     public void addAll(Veiculo[] dados) {
         try {
             fechar();
             abrirEscrita();
             for (Veiculo veiculo : dados) {
                 if (veiculo != null) {
-                    arqEscrita.append(veiculo.dataToText() + "\n");
+                    arqEscrita.append(veiculo.dataToText()).append("\n");
                 }
             }
         } catch (IOException e) {
