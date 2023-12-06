@@ -1,143 +1,156 @@
-import java.io.FileWriter;
-import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
-// Classe que representa um Veículo no estacionamento
 public class Veiculo implements IDataToText {
 
-    String placa;       // Identificação única do veículo (placa)
-    private UsoDeVaga[] usos;   // Array para armazenar os usos da vaga associados ao veículo
+    String placa;
+    private List<UsoDeVaga> usos;
 
-    // Construtor para criar um Veículo com uma placa e um número máximo de usos
-    public Veiculo(String placa, int maxUsos) {
+    /**
+     * Construtor para criar um Veículo com uma placa e um número máximo de usos.
+     * 
+     * @param placa A placa do veículo
+     */
+    public Veiculo(String placa) {
         this.placa = placa;
-        this.usos = new UsoDeVaga[maxUsos];
+        this.usos = new ArrayList<>();
     }
 
-    // Método para estacionar o veículo em uma vaga com um horário de entrada
-    public void estacionar(Vaga vaga, LocalDateTime entrada) {
-        if (this.usos != null) {
-            for (int i = 0; i < this.usos.length; i++) {
-                if (this.usos[i] == null) {
-                    if (vaga.getDisponivel()) {
-                        // Cria um novo uso de vaga e o associa ao veículo e à vaga
-                        this.usos[i] = new UsoDeVaga(vaga, entrada);
-                        // Estaciona o veículo na vaga
-                        vaga.estacionar();
-                        break;
-                    }
-                }
-            }
+    /**
+     * Estaciona o veículo em uma vaga de acordo com o tipo de cliente.
+     * 
+     * @param vaga        A vaga onde o veículo será estacionado
+     * @param tipoCliente O tipo de cliente (Mensalista, Horista, Turno)
+     */
+    public void estacionar(Vaga vaga, TipoCliente tipoCliente) {
+        UsoDeVaga novoUso;
+
+        // Escolhe o tipo de uso de vaga baseado no tipo de cliente
+        if (tipoCliente == TipoCliente.MENSALISTA) {
+            novoUso = new UsoMensalista(vaga);
+        } else if (tipoCliente == TipoCliente.HORISTA) {
+            novoUso = new UsoHorista(vaga);
         } else {
-            // Se o array de usos for nulo, cria um novo uso na posição 0
-            this.usos[0] = new UsoDeVaga(vaga, entrada);
+            novoUso = new UsoTurno(vaga, tipoCliente);
         }
+
+        // Estaciona o veículo na vaga e associa o novo uso ao veículo
+        vaga.estacionar();
+        usos.add(novoUso);
     }
 
-    // Método para escrever as informações do veículo em um arquivo
-    public void escreverArquivo(String cliente, String estacionamento) {
-        try {
-            FileWriter fileWriter = new FileWriter("veiculo.txt", true);
-            // Escreve as informações do cliente e a placa do veículo no arquivo
-            fileWriter.write(cliente + "," + this.placa + ";");
-            // Escreve as informações dos usos de vaga associados ao veículo no arquivo
-            for (UsoDeVaga usoDeVaga : usos) {
-                if (usoDeVaga != null)
-                    usoDeVaga.escreverArquivo(this.placa, estacionamento);
-            }
-            // Fecha o FileWriter
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Método para realizar a saída do veículo em um determinado horário
-    public double sair(LocalDateTime time, TipoCliente tipoCliente) {
+    /**
+     * Realiza a saída do veículo do estacionamento.
+     * 
+     * @param tipoCliente O tipo de cliente (Mensalista, Horista, Turno)
+     * @return O valor total a ser pago pelo uso da vaga durante a saída
+     * @throws Exception Lança uma exceção se o veículo não estiver estacionado
+     */
+    public double sair(TipoCliente tipoCliente) throws Exception {
         double totalPago = 0.0;
-        for (int i = 0; i < usos.length; i++) {
-            if (usos[i] != null && usos[i].getSaida() == null) {
-                if (usos[i].getEntrada() == null) {
-                    System.out.println("Não é possível sair com veículo não estacionado");
-                    break;
+        for (UsoDeVaga usoVaga : usos) {
+            if (usoVaga != null && usoVaga.getSaida() == null) {
+                if (usoVaga.getEntrada() == null) {
+                    throw new Exception("Veículo não foi estacionado para poder sair.");
                 }
-                // Configura a hora de saída e realiza as operações necessárias
-                usos[i].setSaida(time);
-                usos[i].sair(tipoCliente);
-                // Calcula o valor total pago pelo uso da vaga
-                totalPago += usos[i].valorPago();
-                return totalPago;
+                switch (tipoCliente) {
+                    case MENSALISTA:
+                        if (usoVaga instanceof UsoMensalista) {
+                            totalPago += ((UsoMensalista) usoVaga).sair();
+                        }
+                        break;
+
+                    case TURNO_MANHA:
+                    case TURNO_TARDE:
+                    case TURNO_NOITE:
+                        if (usoVaga instanceof UsoTurno) {
+                            totalPago += ((UsoTurno) usoVaga).sair();
+                        }
+                        break;
+
+                    case HORISTA:
+                        if (usoVaga instanceof UsoHorista) {
+                            totalPago += ((UsoHorista) usoVaga).sair();
+                        }
+                        break;
+                }
             }
         }
         return totalPago;
     }
 
-    // Método para calcular o total arrecadado pelo veículo
-    public double totalArrecadado() {
-        double totalArrecadado = 0.0;
-        for (UsoDeVaga uso : usos) {
-            if (uso != null && uso.getSaida() != null) {
-                totalArrecadado += uso.valorPago();
-            }
+    /**
+     * Gera um texto contendo informações sobre os usos de vaga associados ao
+     * veículo.
+     *
+     * @return Uma string com informações detalhadas sobre os usos de vaga do
+     *         veículo
+     */
+    @Override
+    public String dataToText() {
+        StringBuilder data = new StringBuilder();
+        data.append("Placa do Veículo: ").append(placa).append("\n");
+
+        for (UsoDeVaga usoVaga : usos) {
+            data.append(usoVaga.dataToText()).append("\n");
         }
-        return totalArrecadado;
+
+        return data.toString();
     }
 
-    // Método para calcular o total arrecadado pelo veículo em um determinado mês
+    /**
+     * Calcula o total arrecadado pelo veículo em um determinado mês.
+     *
+     * @param mes O mês para o qual se deseja calcular a arrecadação (1 a 12,
+     *            representando janeiro a dezembro)
+     * @return O valor total arrecadado pelo veículo no mês especificado
+     */
     public double arrecadadoNoMes(int mes) {
         double totalArrecadadoNoMes = 0.0;
-        for (UsoDeVaga uso : usos) {
-            if (uso != null && uso.getSaida() != null) {
-                LocalDateTime data = uso.getSaida();
+        for (UsoDeVaga usoVaga : usos) {
+            if (usoVaga != null && usoVaga.getSaida() != null) {
+                LocalDateTime data = usoVaga.getSaida();
                 int mesData = data.getMonthValue();
-                // Verifica se o uso de vaga ocorreu no mês especificado
                 if (data != null && mesData == mes) {
-                    totalArrecadadoNoMes += uso.valorPago();
+                    totalArrecadadoNoMes += usoVaga.valorPago();
                 }
             }
         }
         return totalArrecadadoNoMes;
     }
 
-    // Método para obter o total de usos associados ao veículo
-    public int totalDeUsos() {
-        int totalUsos = 0;
-        for (UsoDeVaga uso : usos) {
-            if (uso != null) {
-                totalUsos++;
+    /**
+     * Calcula o valor total arrecadado pelo veículo.
+     *
+     * @return O valor total arrecadado pelo veículo por todos os usos realizados
+     */
+    public double totalArrecadado() {
+        double totalArrecadado = 0.0;
+        for (UsoDeVaga usoVaga : usos) {
+            if (usoVaga != null && usoVaga.getSaida() != null) {
+                totalArrecadado += usoVaga.valorPago();
             }
         }
-        return totalUsos;
+        return totalArrecadado;
     }
 
-    // Métodos getters e setters para acessar e modificar os atributos da classe
+    /**
+     * Retorna o número total de usos realizados pelo veículo.
+     *
+     * @return O número total de usos realizados pelo veículo
+     */
+    public int totalDeUsos() {
+        return usos.size();
+    }
 
+    /**
+     * Obtém a placa do veículo.
+     *
+     * @return A placa do veículo
+     */
     public String getPlaca() {
-        return this.placa;
+        return placa;
     }
 
-    public void setPlaca(String placa) {
-        this.placa = placa;
-    }
-
-    public UsoDeVaga[] getUsos() {
-        return this.usos;
-    }
-
-    public void setUsos(UsoDeVaga[] usos) {
-        this.usos = usos;
-    }
-
-    @Override
-	public String dataToText() {
-		return placa;
-	}
-
-	@Override
-   	public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Placa: ").append(placa).append("\n");
-        sb.append("Total de usos: ").append(usos.length);
-        return sb.toString();
-    }
 }
