@@ -8,7 +8,7 @@ O objetivo do projeto Parking Rangers é desenvolver um sistema de software para
 * Davi Martins Gentil
 * Lara Andrade Carvalho
 * Larissa Felipe
-* Lukas Maciel
+* ~~Lukas Maciel~~
 * Otavio Salomão
 
 ## Professores responsáveis
