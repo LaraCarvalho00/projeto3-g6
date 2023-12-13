@@ -40,6 +40,22 @@ public class Veiculo implements IDataToText {
         usos.add(novoUso);
     }
 
+    public void estacionar(Vaga vaga, TipoCliente tipoCliente, LocalDateTime entrada, LocalDateTime saida) {
+        UsoDeVaga novoUso;
+
+        // Escolhe o tipo de uso de vaga baseado no tipo de cliente
+        if (tipoCliente == TipoCliente.MENSALISTA) {
+            novoUso = new UsoMensalista(vaga, entrada, saida);
+        } else if (tipoCliente == TipoCliente.HORISTA) {
+            novoUso = new UsoHorista(vaga, entrada, saida);
+        } else {
+            novoUso = new UsoTurno(vaga, tipoCliente, entrada, saida);
+        }
+
+        // Estaciona o veículo na vaga e associa o novo uso ao veículo
+        vaga.estacionar();
+        usos.add(novoUso);
+    }
     /**
      * Realiza a saída do veículo do estacionamento.
      * 

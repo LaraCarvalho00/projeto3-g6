@@ -1,3 +1,6 @@
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
 /**
  * Representa o uso de uma vaga de estacionamento durante um turno.
  */
@@ -16,17 +19,31 @@ public class UsoTurno extends UsoDeVaga {
         this.tipoCliente = tipoCliente;
     }
 
+    public UsoTurno(Vaga vaga, TipoCliente tipoCliente2, LocalDateTime entrada, LocalDateTime saida) {
+         super(vaga, entrada, saida);
+         this.tipoCliente = tipoCliente2;
+    }
+
     /**
-     * Calcula o valor a ser pago pelo uso da vaga (0 se o mês já estiver pago).
+     * Calcula o valor a ser pago pelo uso da vaga.
      *
-     * @return O valor a ser pago pelo uso durante um turno (0 se o mês já estiver pago)
+     * @return O valor a ser pago pelo uso durante um turno (0 se o mês já estiver pago ou se estiver fora do horário do tipo de cliente)
      */
     @Override
     public double valorPago() {
         if (mesPago) {
-            return 0; // Retorna 0 se o mês já estiver pago
+            // Se o mês estiver pago, verifica se está após o horário permitido
+            if (tipoCliente.getHoraFim() != null) {
+                LocalTime horarioAtual = LocalTime.now();
+                if (horarioAtual.isAfter(tipoCliente.getHoraFim())) {
+                    // Se passou do horário do tipo de cliente, paga como horista
+                    return TipoCliente.HORISTA.getValor();
+                }
+            }
+            return 0; // Mês pago e dentro do horário do tipo de cliente
         } else {
-            return tipoCliente.getValor(); // Valor associado ao tipo de cliente para o uso durante um turno
+            // Mês não está pago, retorna o valor do tipo de cliente
+            return tipoCliente.getValor();
         }
     }
 

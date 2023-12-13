@@ -1,7 +1,5 @@
-/**
- * Representa o uso de uma vaga de estacionamento para mensalistas.
- * Pagamento é feito uma vez por mês.
- */
+import java.time.LocalDateTime;
+
 public class UsoMensalista extends UsoDeVaga {
     private boolean mesPago = false; // Indica se o mês está pago ou não
 
@@ -13,10 +11,16 @@ public class UsoMensalista extends UsoDeVaga {
         super(vaga, servico);
     }
 
+    public UsoMensalista(Vaga vaga, LocalDateTime entrada, LocalDateTime saida) {
+         super(vaga, entrada, saida);
+         
+    }
+
     /**
-     * Calcula o valor a ser pago pelo uso da vaga (0 se o mês já estiver pago).
-     *
-     * @return O valor a ser pago pelo uso mensalista (0 se o mês já estiver pago)
+     * Calcula o valor a ser ppublic UsoMensalista(Vaga vaga, LocalDateTime entrada) {
+    }
+
+    urn O valor a ser pago pelo uso mensalista (0 se o mês já estiver pago)
      */
     @Override
     public double valorPago() {

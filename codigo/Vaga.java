@@ -1,10 +1,7 @@
-import java.io.FileWriter;
-import java.io.IOException;
-
 /**
  * Classe que representa uma vaga no estacionamento.
  */
-public class Vaga {
+public class Vaga implements Comparable<Vaga>, IDataToText {
     private String id;           // Identificação única da vaga
     private boolean disponivel;  // Indica se a vaga está disponível
 
@@ -18,32 +15,17 @@ public class Vaga {
         this.disponivel = true;  // Inicialmente, a vaga está disponível
     }
 
-    /**
-     * Obtém a identificação da vaga.
-     *
-     * @return Identificação da vaga
-     */
-    public String getId() {
-        return this.id;
-    }
-
+   
     /**
      * Obtém a disponibilidade da vaga.
      *
      * @return true se a vaga está disponível, false caso contrário
      */
-    public boolean getDisponivel() {
+    public boolean disponivel() {
         return this.disponivel;
     }
 
-    /**
-     * Configura a disponibilidade da vaga.
-     *
-     * @param disponivel true para marcar a vaga como disponível, false para ocupada
-     */
-    public void setDisponivel(boolean disponivel) {
-        this.disponivel = disponivel;
-    }
+   
 
     /**
      * Estaciona um veículo na vaga.
@@ -73,28 +55,31 @@ public class Vaga {
         }
     }
 
-    /**
-     * Escreve informações da vaga em um arquivo.
-     *
-     * @param estacionamento Identificador do estacionamento
-     */
-    public void escreverArquivo(String estacionamento) {
-        try {
-            FileWriter fileWriter = new FileWriter("vaga.txt", true);
-            fileWriter.write(estacionamento + "," + this.id + "," + this.disponivel + ";");
-            System.out.println("Escrito uma vaga no arquivo.");
-            fileWriter.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+
+    @Override
+    public int compareTo(Vaga outraVaga) {
+        if (this.disponivel && !outraVaga.disponivel()) {
+            return -1; // Esta vaga está disponível, outraVaga está ocupada, portanto é "menor"
+        } else if (!this.disponivel && outraVaga.disponivel()) {
+            return 1; // Esta vaga está ocupada, outraVaga está disponível, portanto é "maior"
+        } else {
+            return 0; // Ambas as vagas têm a mesma disponibilidade
         }
     }
 
-    /**
-     * Configura a identificação da vaga.
+
+      /**
+     * Método que retorna uma representação textual dos dados da vaga.
      *
-     * @param id Identificação da vaga
+     * @return String com os dados da vaga
      */
-    public void setId(String id) {
-        this.id = id;
+    @Override
+    public String dataToText() {
+        StringBuilder data = new StringBuilder();
+        data.append("ID da Vaga: ").append(this.id).append("\n");
+        data.append("Disponibilidade: ").append(this.disponivel ? "Disponível" : "Ocupada").append("\n");
+        return data.toString();
     }
+
+   
 }

@@ -2,7 +2,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
 // Classe abstrata que representa o uso de uma vaga de estacionamento
-public abstract class UsoDeVaga {
+public abstract class UsoDeVaga implements IDataToText {
 
     // Atributos da classe
     Vaga vaga; // Vaga utilizada
@@ -19,6 +19,10 @@ public abstract class UsoDeVaga {
         this.vaga = vaga;
         contratarServico(servico);
         entrada = LocalDateTime.now();
+    }
+    public UsoDeVaga(Vaga vaga, LocalDateTime entrada, LocalDateTime saida) {
+        this.entrada = entrada;
+        this.saida = saida;
     }
     
     // Método para adicionar serviços extras ao valor pago
@@ -43,7 +47,7 @@ public abstract class UsoDeVaga {
      * @return O valor total a ser pago pelo uso da vaga
      */
     public double sair() {
-        vaga.setDisponivel(true); // Define a vaga como disponível
+        vaga.sair(); // Define a vaga como disponível
         this.saida = LocalDateTime.now(); // Registra a data e hora de saída
         int tempoPermanenciaMinutos = (int) entrada.until(saida, ChronoUnit.MINUTES); // Calcula o tempo de permanência em minutos
 
